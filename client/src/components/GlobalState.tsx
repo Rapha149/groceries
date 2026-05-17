@@ -153,6 +153,10 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = (props: G
             newSettings.includeExistingItemsInSearch = InitSettings.includeExistingItemsInSearch;
             updated = true;
         }
+        if (!Object.prototype.hasOwnProperty.call(newSettings, 'newItemsOnlyStockedInAddedLists')) {
+            newSettings.newItemsOnlyStockedInAddedLists = InitSettings.newItemsOnlyStockedInAddedLists;
+            updated = true;
+        }
         if (!Object.prototype.hasOwnProperty.call(newSettings, 'daysOfConflictLog')) {
             newSettings.daysOfConflictLog = InitSettings.daysOfConflictLog;
             updated = true;
@@ -190,7 +194,7 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = (props: G
         let storageSettingsExist = false;
         if (storageSettingsStr != null && isJsonString(String(storageSettingsStr))) {
             storageSettings=JSON.parse(String(storageSettingsStr));
-            const settingsObjFiltered=pick(storageSettings,"addListOption","removeFromAllLists","completeFromAllLists","includeGlobalInSearch", "includeExistingItemsInSearch", "daysOfConflictLog","savedListID","alexaDefaultListGroup");
+            const settingsObjFiltered=pick(storageSettings,"addListOption","removeFromAllLists","completeFromAllLists","includeGlobalInSearch", "includeExistingItemsInSearch", "newItemsOnlyStockedInAddedLists", "daysOfConflictLog","savedListID","alexaDefaultListGroup");
             storageSettings = settingsObjFiltered;
             storageSettingsExist = true;
         }

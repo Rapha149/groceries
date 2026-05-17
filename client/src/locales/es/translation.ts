@@ -209,6 +209,7 @@ export const es_translations =
         "update_user_info": "Actualizar información de usuario",
         "include_globalitems_in_search": "Incluir elementos globales en la búsqueda",
         "include_existing_items_in_search": "Incluir elementos ya existentes en la búsqueda",
+        "new_items_only_stocked_in_added_lists": "Los nuevos artículos solo se abastecen en las listas a las que se han añadido",
         "offline_cant_get_sharing_info": "Trabajando sin conexión, no se pueden recuperar ni editar usuarios compartidos",
         "logged_in": "Conectado",
         "working_offline": "Trabajando sin conexión",

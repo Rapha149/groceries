@@ -112,12 +112,19 @@ const Settings: React.FC<HistoryProps> = () => {
                 onIonChange={(e) => changeSetting("includeGlobalInSearch",e.detail.checked)}>
                     {t("general.include_globalitems_in_search")}
             </IonCheckbox>
-            </IonItem>
+          </IonItem>
           <IonItem className="shorter-item-no-padding settings-item" key="searchsettings">
             <IonCheckbox justify="space-between" labelPlacement="start"
                 checked={localSettings.includeExistingItemsInSearch}
                 onIonChange={(e) => changeSetting("includeExistingItemsInSearch",e.detail.checked)}>
-                    {t("general.include_existing_items_in_search")}
+                {t("general.include_existing_items_in_search")}
+            </IonCheckbox>
+          </IonItem>
+          <IonItem className="shorter-item-no-padding settings-item" key="onlystockedinadded">
+            <IonCheckbox justify="space-between" labelPlacement="start"
+                checked={localSettings.newItemsOnlyStockedInAddedLists}
+                onIonChange={(e) => changeSetting("newItemsOnlyStockedInAddedLists",e.detail.checked)}>
+                {t("general.new_items_only_stocked_in_added_lists")}
             </IonCheckbox>
           </IonItem>
           <IonItem className="shorter-item-no-padding settings-item" key="dayslog">

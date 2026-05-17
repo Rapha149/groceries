@@ -209,6 +209,7 @@ export const it_translations =
         "update_user_info": "Aggiorna informazioni utente",
         "include_globalitems_in_search": "Includi articoli globali nella ricerca",
         "include_existing_items_in_search": "Includi articoli già presenti nella ricerca",
+        "new_items_only_stocked_in_added_lists": "I nuovi articoli vengono disponibile solo negli elenchi a cui sono stati aggiunti",
         "offline_cant_get_sharing_info": "Lavorando offline, impossibile recuperare o modificare gli utenti condivisi",
         "logged_in": "Accesso effettuato",
         "working_offline": "Lavorando offline",

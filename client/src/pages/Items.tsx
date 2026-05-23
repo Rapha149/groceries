@@ -130,39 +130,40 @@ const Items: React.FC<HistoryProps> = () => {
     filterAndCheckRows(searchState.searchCriteria,searchState.isFocused);
   },[searchRows,searchState.isFocused,searchState.searchCriteria,filterAndCheckRows])
 
-  useEffect(() => {
-      async function scrollToPendingItem() {
-          const pendingItemID = pendingScrollItemIDRef.current;
-          if (pendingItemID === null) {
-              return;
-          }
+  const scrollToPendingItem = useCallback(async () => {
+    const pendingItemID = pendingScrollItemIDRef.current;
+    if (pendingItemID === null) {
+      return;
+    }
 
-          const pendingItemExists = pageState.itemRows.some((itemRow) => itemRow.itemID === pendingItemID);
-          if (!pendingItemExists) {
-              return;
-          }
+    const pendingItemExists = pageState.itemRows.some((itemRow) => itemRow.itemID === pendingItemID);
+    if (!pendingItemExists) {
+      return;
+    }
 
-          const itemRowElem = document.getElementById("item-row-"+pendingItemID);
-          const content = contentRef.current;
-          if (itemRowElem === null || !content) {
-              return;
-          }
+    const itemRowElem = document.getElementById("item-row-"+pendingItemID);
+    const content = contentRef.current;
+    if (itemRowElem === null || !content) {
+      return;
+    }
 
-          const scrollElem = await content.getScrollElement();
-          const rowRect = itemRowElem.getBoundingClientRect();
-          const scrollRect = scrollElem.getBoundingClientRect();
-          const targetY = Math.max(0, scrollElem.scrollTop + rowRect.top - scrollRect.top - 12);
+    const scrollElem = await content.getScrollElement();
+    const rowRect = itemRowElem.getBoundingClientRect();
+    const scrollRect = scrollElem.getBoundingClientRect();
+    const targetY = Math.max(0, scrollElem.scrollTop + rowRect.top - scrollRect.top - 12);
 
-          try {
-              await content.scrollToPoint(0,targetY,300);
-          } catch {
-              log.debug("Error auto-scrolling to added item", pendingItemID);
-          } finally {
-              pendingScrollItemIDRef.current = null;
-          }
-      }
-      void scrollToPendingItem();
+    try {
+      await content.scrollToPoint(0,targetY,300);
+    } catch {
+      log.debug("Error auto-scrolling to added item", pendingItemID);
+    } finally {
+      pendingScrollItemIDRef.current = null;
+    }
   },[pageState.itemRows])
+
+  useEffect(() => {
+    void scrollToPendingItem();
+  },[scrollToPendingItem])
 
   const shouldBeActive = useCallback( (itemList: ItemList, newRow: boolean, allItemLists: ItemList[]): boolean => {
     if (!newRow && !itemList.stockedAt) {
@@ -239,6 +240,7 @@ const Items: React.FC<HistoryProps> = () => {
         response.success = false;
         response.errorHeader = t("error.header_adding_item");
         response.errorMessage = t("error.item_exists_current_list");
+        response.itemID = String(testItemDoc!._id);
         return response;
       }
     }
@@ -357,7 +359,8 @@ const Items: React.FC<HistoryProps> = () => {
         setSearchState(prevState => ({...prevState, searchCriteria: "", filteredSearchRows: [], isOpen: false, isFocused: false}));
         if (!success) {
           setPageState(prevState => ({...prevState,showAlert: true, alertHeader: errorHeader, alertMessage: errorMessage}));
-        } else if (itemID !== null) {
+        }
+        if (itemID !== null) {
           pendingScrollItemIDRef.current = itemID;
         }
         return;
@@ -547,9 +550,10 @@ const Items: React.FC<HistoryProps> = () => {
     setSearchState(prevState => ({...prevState, searchCriteria: "", filteredSearchRows: [], isOpen: false, isFocused: false}));
     if (!success) {
       setPageState(prevState => ({...prevState,showAlert: true, alertHeader: errorHeader, alertMessage: errorMessage}));
-    } else if (itemID !== null) {
+    }
+    if (itemID !== null) {
       pendingScrollItemIDRef.current = itemID;
-    }      
+    }
   }
 
 
@@ -637,7 +641,10 @@ const Items: React.FC<HistoryProps> = () => {
     <IonAlert
       key="mainerroralert"
       isOpen={pageState.showAlert}
-      onDidDismiss={() => {setPageState(prevState => ({...prevState,showAlert: false, alertHeader:"",alertMessage:""}));}}
+      onDidDismiss={() => {
+        setPageState(prevState => ({...prevState,showAlert: false, alertHeader:"",alertMessage:""}));
+        void scrollToPendingItem();
+      }}
       header={pageState.alertHeader}
       message={pageState.alertMessage}
       buttons={[String(t("general.ok"))]}

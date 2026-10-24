@@ -96,7 +96,7 @@ const Items: React.FC<HistoryProps> = () => {
   useEffect( () => {
     if (baseItemRowsLoaded && listRowsLoaded && !isLoading) {
       setPageState( (prevState) => {
-        const [newItemRows,newCategoryRows] = getItemRows(baseItemDocs as ItemDocs, listCombinedRows, categoryDocs as CategoryDoc[], uomDocs as UomDoc[], pageState.selectedListType, pageState.selectedListOrGroupID, prevState.categoryRows, globalState.categoryColors)
+        const [newItemRows,newCategoryRows] = getItemRows(baseItemDocs as ItemDocs, listCombinedRows, categoryDocs as CategoryDoc[], uomDocs as UomDoc[], pageState.selectedListType, pageState.selectedListOrGroupID, prevState.categoryRows, globalState.categoryColors, globalState.uomShownAbbreviations)
         return (
         { ...prevState,
         doingUpdate: false,
@@ -105,7 +105,7 @@ const Items: React.FC<HistoryProps> = () => {
       });
     }
   },[baseItemRowsLoaded, listRowsLoaded, isLoading, 
-    uomDocs, baseItemDocs, listCombinedRows, categoryDocs, pageState.selectedListOrGroupID, pageState.selectedListType, globalState.categoryColors]);
+    uomDocs, baseItemDocs, listCombinedRows, categoryDocs, pageState.selectedListOrGroupID, pageState.selectedListType, globalState.categoryColors, globalState.uomShownAbbreviations]);
 
   useEffect( () => {
     if (baseSearchItemRowsLoaded && !isLoading) {
@@ -516,7 +516,7 @@ const Items: React.FC<HistoryProps> = () => {
     const combinedRow: ListCombinedRow | undefined = listCombinedRows.find(lcr => lcr.listOrGroupID === listOrGroupID);
     if (combinedRow === undefined) {return};
     const newListType: RowType = combinedRow.rowType;
-    const [newItemRows,newCategoryRows] = getItemRows(baseItemDocs as ItemDocs, listCombinedRows, categoryDocs as CategoryDoc[], uomDocs as UomDoc[], newListType, listOrGroupID, [], globalState.categoryColors)
+    const [newItemRows,newCategoryRows] = getItemRows(baseItemDocs as ItemDocs, listCombinedRows, categoryDocs as CategoryDoc[], uomDocs as UomDoc[], newListType, listOrGroupID, [], globalState.categoryColors, globalState.uomShownAbbreviations)
     setPageState({...pageState, selectedListOrGroupID: listOrGroupID, selectedListType: newListType, itemRows: newItemRows, categoryRows: newCategoryRows });
     updateSettingKey("savedListID",listOrGroupID);
     if (combinedRow.rowType === RowType.list) {
@@ -726,7 +726,7 @@ const Items: React.FC<HistoryProps> = () => {
       const itemList = itemDoc?.lists.find(il => il.listID === pageState.selectedListOrGroupID) ?? itemDoc?.lists[0];
       if (itemDoc !== undefined && itemList !== undefined) {
         rowName = translatedItemNameWithUOM(itemDoc.globalItemID,itemDoc.name,itemDoc.pluralName,rowQuantity,itemList.uomName);
-        rowUomDesc = translatedUOMShortName(itemList.uomName,uomDocs as UomDoc[],String(itemDoc.listGroupID),rowQuantity);
+        rowUomDesc = translatedUOMShortName(itemList.uomName,uomDocs as UomDoc[],String(itemDoc.listGroupID),rowQuantity,globalState.uomShownAbbreviations);
       }
     }
     const quantityUOMDesc = (rowQuantity !== 0 && (rowQuantity > 1 || rowUomDesc !== "")) ? rowQuantity.toString() + (rowUomDesc === "" ? "" : " " + rowUomDesc) : "";
